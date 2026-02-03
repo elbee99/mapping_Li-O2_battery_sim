@@ -174,7 +174,7 @@ param = pybamm.ParameterValues(
         "Initial O2 concentration [mol.m-3]": 3.7,
         "Li2O2 molar mass [kg.mol-1]": 45.88e-3,
         "Li2O2 density [kg.m-3]": 2310,
-        "Initial porosity": 0.8,
+        "Initial porosity": 0.6,
         "Minimum porosity": 0.0
     }
 )
@@ -207,9 +207,15 @@ disc = pybamm.Discretisation(mesh, spatial_methods)
 disc.process_model(model)
 
 # solve
-solver = pybamm.CasadiSolver(root_tol=1e-2)
+solver = pybamm.CasadiSolver(
+    mode="safe",
+    atol=1e-6,
+    rtol=1e-6,
+    root_tol=1e-6,
+    dt_max=60,  # Maximum time step of 60 seconds
+)
 hours = 1000
-t_eval = np.linspace(0, 3600*hours, 60*hours)
+t_eval = np.linspace(0, 3600*hours, 360*hours)
 # larger time steps needed for long simulation
 
 # termination condition
